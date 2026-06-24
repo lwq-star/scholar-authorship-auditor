@@ -33,13 +33,13 @@ Please use this [$scholar-authorship-auditor](SKILL.md) skill to find all articl
 
 聊天回答和生成报告会跟随用户提问语言。论文题名、期刊名、作者名、DOI、PMID、arXiv ID 和来源原文默认保留原文，除非用户明确要求翻译。
 
-### 示例预览
+### 真实运行结果预览
 
-下图为示意预览；实际报告会随学者和可核实来源变化。
+下图由已有 Markdown 审计报告摘录生成；完整运行结果仍保留在公开仓库之外。
 
-![中文快速开始示例](docs/images/quickstart-zh.png)
+![朴世龙审计结果预览](docs/images/piao-shilong-result-preview.png)
 
-![英文快速开始示例](docs/images/quickstart-en.png)
+![Giovanni Forzieri 审计结果预览](docs/images/giovanni-forzieri-result-preview.png)
 
 ## 它能做什么
 

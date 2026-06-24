@@ -33,13 +33,13 @@ Please use this [$scholar-authorship-auditor](SKILL.md) skill to find all articl
 
 The chat answer and generated reports follow the user's request language. Paper titles, journal names, author names, DOI, PMID, arXiv IDs, and quoted source text stay in their original form unless translation is requested.
 
-### Example previews
+### Example result previews
 
-Illustrative previews only; generated reports depend on the scholar and available evidence.
+These previews are generated from existing Markdown audit outputs. Full run outputs remain outside this public repository.
 
-![Chinese quick start preview](docs/images/quickstart-zh.png)
+![Piao Shilong audit result preview](docs/images/piao-shilong-result-preview.png)
 
-![English quick start preview](docs/images/quickstart-en.png)
+![Giovanni Forzieri audit result preview](docs/images/giovanni-forzieri-result-preview.png)
 
 ## What It Does
 
