@@ -10,6 +10,7 @@ Use these gates before producing a final qualifying-paper list. A failed gate do
 | Timeline Gate | Build disambiguation spine. | At least one dated or strongly evidenced education/employment phase. | Use low-confidence mode; avoid exhaustive claims. |
 | Candidate Coverage Gate | Avoid single-source bias. | At least two independent sources checked; field source when applicable. | State coverage limitation. |
 | Publication Existence Gate | Prevent fabricated or hallucinated titles. | DOI/PMID/arXiv/OpenAlex/Semantic Scholar/Crossref/publisher/official CV source. | Exclude from confirmed list. |
+| Published Version and Venue Gate | Prevent preprints or unresolved venues from entering the journal-article table. | Final record is a journal article or accepted/published proceedings paper with a verified venue. | Merge to published version or exclude from default final table. |
 | Institution Normalization Gate | Avoid naive string matching. | Target author affiliation parsed and normalized, or alternative identity evidence recorded. | Lower confidence or mark ambiguous. |
 | Identity Match Gate | Separate same-name authors. | Confirmed/strong/moderate identity evidence. | Move to ambiguous/excluded. |
 | Authorship Role Gate | Verify first/co-first/corresponding status. | Role evidence from byline, footnote, publisher/PDF/JATS, or reliable metadata. | Exclude from confirmed list or mark provisional. |
@@ -59,29 +60,46 @@ Strong identifiers:
 - publisher page;
 - official CV/publication page.
 
-### 5. Institution Normalization Gate
+### 5. Published Version and Venue Gate
+
+Pass if each final table record has:
+
+- a final publication status such as `journal-article`, accepted conference/proceedings paper, or equivalent formally published paper-like record;
+- a verified journal or venue name;
+- no unresolved preprint/discussion/posted-content version when a published version should be checked.
+
+Fail if:
+
+- the only located record is a standalone preprint, discussion paper, posted-content record, supplement, withdrawn manuscript, or a page marked not accepted for further review;
+- the journal/venue is blank;
+- the journal/venue is a placeholder such as `journal pending verification`, `venue pending verification`, `期刊信息待核验`, or `来源待核验`;
+- a preprint/discussion DOI has not been checked against Crossref/OpenAlex title search for a final version.
+
+On failure, search for and merge to the published version. If no final version is found, exclude the record from the default final journal-article table unless the user explicitly requested provisional preprints.
+
+### 6. Institution Normalization Gate
 
 Pass if the target author's own affiliation is parsed and mapped to timeline or a strong alternative identity marker exists.
 
 Do not pass using coauthor affiliation.
 
-### 6. Identity Match Gate
+### 7. Identity Match Gate
 
 Pass if identity confidence is `confirmed`, `strong`, or acceptable `moderate`.
 
 For normal full runs, `confirmed`, `strong`, and acceptable `moderate` identity evidence can pass when role evidence is adequate and no same-name conflict remains.
 
-### 7. Authorship Role Gate
+### 8. Authorship Role Gate
 
 Pass if the target is verified as first, co-first, corresponding, or co-corresponding.
 
 Do not pass based only on last-author position.
 
-### 8. Deduplication Gate
+### 9. Deduplication Gate
 
 Pass when duplicates/preprints/published versions have been merged or explicitly marked.
 
-### 9. Output Audit Gate
+### 10. Output Audit Gate
 
 Pass if final output includes:
 
@@ -89,7 +107,9 @@ Pass if final output includes:
 - included qualifying papers;
 - no default sections for search coverage, limitations, notes, preprint candidates, ambiguous candidates, rejection logs, evidence tables, Evidence Passport, companion files, or supporting files;
 - no default CSV/XLSX/JSON/rejection-log deliverables;
-- a final article table with only year, title, journal, and scholar role columns.
+- a final article table with only year, title, journal, and scholar role columns;
+- no blank or placeholder journal values;
+- no standalone preprints, discussion papers, posted-content records, supplements, withdrawn manuscripts, or records marked not accepted for further review in the default final table.
 
 Internal evidence, rejected candidates, coverage labels, and caveats should still be retained in working notes when useful, but they should not be exported or inserted into the generated Markdown/Word reports unless the user explicitly asks for audit details.
 

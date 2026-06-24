@@ -37,6 +37,44 @@ SKILL_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_TEMPLATE = SKILL_DIR / "assets" / "authorship-audit-template.docx"
 DEFAULT_OUTPUT_ROOT = Path.cwd() / "outputs" / "scholar-authorship-auditor"
 
+INVALID_JOURNAL_VALUES = {
+    "",
+    "journal pending verification",
+    "venue pending verification",
+    "source pending verification",
+    "journal information pending verification",
+    "venue information pending verification",
+    "\u671f\u520a\u4fe1\u606f\u5f85\u6838\u9a8c",
+    "\u671f\u520a\u5f85\u6838\u9a8c",
+    "\u6765\u6e90\u5f85\u6838\u9a8c",
+    "\u51fa\u7248\u6e90\u5f85\u6838\u9a8c",
+}
+
+NON_FINAL_PUBLICATION_MARKERS = {
+    "preprint",
+    "posted-content",
+    "posted_content",
+    "discussion",
+    "discussion-paper",
+    "discussion_paper",
+    "supplement",
+    "withdrawn",
+    "submitted",
+    "under-review",
+    "under_review",
+}
+
+NON_FINAL_JOURNAL_PATTERNS = (
+    " discuss",
+    "discuss.",
+    "discussion paper",
+    "preprint",
+    "posted content",
+    "supplement",
+    "withdrawn",
+    "not accepted",
+)
+
 
 LABELS = {
     "en": {
@@ -127,6 +165,57 @@ def row_value(row: Any, *keys: str) -> str:
         values = [str(item).strip() for item in row]
         return values[0] if values else ""
     return str(row).strip()
+
+
+def normalized_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "").strip().lower())
+
+
+def publication_marker(value: Any) -> str:
+    return normalized_text(value).replace(" ", "_")
+
+
+def is_invalid_journal(value: Any) -> bool:
+    journal = normalized_text(value)
+    if journal in INVALID_JOURNAL_VALUES:
+        return True
+    return any(pattern in f" {journal}" for pattern in NON_FINAL_JOURNAL_PATTERNS)
+
+
+def is_non_final_publication(row: dict[str, Any]) -> bool:
+    publication_type = publication_marker(row.get("publication_type") or row.get("type"))
+    publication_status = publication_marker(row.get("publication_status") or row.get("status"))
+    markers = {publication_type, publication_status}
+    return any(marker in NON_FINAL_PUBLICATION_MARKERS for marker in markers if marker)
+
+
+def validate_articles(payload: dict[str, Any]) -> None:
+    errors: list[str] = []
+    for idx, row in enumerate(payload.get("articles", []), start=1):
+        if isinstance(row, dict):
+            title = row_value(row, "title", "paper_title") or f"article #{idx}"
+            journal = row_value(row, "journal", "venue", "source")
+        elif isinstance(row, (list, tuple)):
+            values = [str(item).strip() for item in row]
+            title = values[1] if len(values) > 1 and values[1] else f"article #{idx}"
+            journal = values[2] if len(values) > 2 else ""
+        else:
+            errors.append(f"article #{idx}: unsupported article row format")
+            continue
+        if is_invalid_journal(journal):
+            errors.append(
+                f"{title}: final report journal/venue is unresolved or non-final ({journal!r})"
+            )
+        if isinstance(row, dict) and is_non_final_publication(row):
+            errors.append(
+                f"{title}: publication_type/status is non-final; merge to a published version or exclude it"
+            )
+    if errors:
+        joined = "\n- ".join(errors)
+        raise SystemExit(
+            "Invalid final article payload. Resolve publication status and venue before rendering:\n"
+            f"- {joined}"
+        )
 
 
 def timeline_rows(payload: dict[str, Any]) -> list[tuple[str, str]]:
@@ -295,6 +384,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     payload = json.loads(args.payload.read_text(encoding="utf-8-sig"))
+    validate_articles(payload)
     language = normalize_language(payload.get("language"))
     labels = copy.deepcopy(LABELS[language])
 

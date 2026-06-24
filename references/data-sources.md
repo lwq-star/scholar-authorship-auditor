@@ -29,7 +29,7 @@ Use first for candidate paper lists:
 2. official CV/publication page;
 3. ORCID works;
 4. Google Scholar profile as a lightweight recall-gap check;
-5. Crossref DOI metadata only for missing DOI, venue, date, or version clarity;
+5. Crossref DOI metadata only for missing DOI, venue, date, publication type, or version clarity;
 6. Semantic Scholar author page only for OpenAlex gaps or unresolved same-name/citation-network cases;
 7. field-specific databases only when the field/source gap requires them.
 
@@ -84,7 +84,9 @@ For speed, use OpenAlex field selection (`select` or equivalent) and keep only f
 
 ### Crossref
 
-Good for DOI, title, venue, publication date, and broad metadata. Author affiliations and corresponding-author data are incomplete. Do not rely on Crossref alone for identity disambiguation. Do not run Crossref for every OpenAlex record when OpenAlex already provides DOI, venue, and date; query it only for missing or conflicting metadata.
+Good for DOI, title, venue, publication date, publication type, and broad metadata. Author affiliations and corresponding-author data are incomplete. Do not rely on Crossref alone for identity disambiguation. Do not run Crossref for every OpenAlex record when OpenAlex already provides DOI, venue, date, and a final publication type; query it only for missing or conflicting metadata.
+
+Treat Crossref `type=posted-content` as discovery metadata, not a final journal article. When a title search returns both `posted-content` and `journal-article` versions, prefer the `journal-article` version and merge the posted-content record into it.
 
 ### Semantic Scholar
 
@@ -113,6 +115,26 @@ Best for final role verification of ambiguous cases. Use them to check:
 Do not open publisher pages or PDFs for every paper in an OpenAlex author-works batch. Reserve them for possible co-first/equal-contribution records, missing or conflicting correspondence metadata, title/DOI/version conflicts, records discovered outside OpenAlex, same-name collisions, main-journal `Nature` or `Science` records, and official-CV/OpenAlex role conflicts.
 
 When OpenAlex shows a target first-author or corresponding-author role with strong identity and no conflict, keep the source evidence internally and include the record without opening the publisher page.
+
+## Published-version and venue resolution
+
+Before final inclusion, resolve every candidate to a final publication status and verified venue.
+
+Run this resolution when any of the following is true:
+
+- OpenAlex `type` is `preprint`;
+- Crossref `type` is `posted-content`;
+- the venue/source/container-title is blank;
+- the venue/source contains labels such as `Discuss.`, `discussion paper`, `preprint`, `submitted`, `under review`, `supplement`, or `not accepted`;
+- DOI/title/version metadata conflict across sources.
+
+Resolution steps:
+
+1. Search Crossref and OpenAlex by normalized title.
+2. Compare candidate versions by DOI family, normalized title similarity, year/date, first author, and publisher relation links.
+3. If a `journal-article` or accepted proceedings version exists with title similarity >= 0.90, merge into that version and use its final venue, DOI, year/date, and publication type.
+4. If no final article/proceedings version exists, keep the record only as internal discovery evidence unless the user explicitly asks for preprints.
+5. Do not write blank venue placeholders such as `journal pending verification`, `venue pending verification`, or `期刊信息待核验` into the default final report.
 
 ### Local-language sources
 
@@ -158,7 +180,7 @@ For a full run, attempt at least:
 - one identity/timeline source;
 - OpenAlex author-works batch enumeration when quota and identity resolution allow;
 - one profile/spine source such as ORCID, official CV, or Google Scholar as a recall-gap check;
-- one publisher/PDF-level check only for ambiguous role evidence where needed.
+- one publisher/PDF-level check only for ambiguous role evidence or publication-status evidence where needed.
 
 For common names, check at least two independent bibliographic sources plus timeline evidence.
 

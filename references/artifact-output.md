@@ -135,7 +135,7 @@ Year | Title | Journal | Scholar role
 
 The `Journal` column must contain only the journal or venue name. Do not include volume, issue, page range, article number, DOI, URL, database name, or source-system labels in that column. Do not include DOI or source links in the default table unless the user explicitly asks for identifiers or links.
 
-Standalone preprints are internal discovery evidence by default. Merge a preprint into the published article when a journal version exists. Mention preprints only if the user explicitly asks for them or no published version exists and the user accepts provisional records.
+Standalone preprints, discussion papers, and posted-content records are internal discovery evidence by default. Merge them into the published article when a journal version exists. If no final journal/proceedings version exists, exclude them from the default Markdown and Word reports unless the user explicitly asks for provisional preprints.
 
 ## Consistency rule
 

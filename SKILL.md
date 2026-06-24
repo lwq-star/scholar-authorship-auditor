@@ -16,7 +16,7 @@ description: >-
 
 ## Skill metadata
 
-- Version: 0.7.3
+- Version: 0.7.4
 - Status: active
 - Data access level: raw-to-verified
 - Task type: open-ended evidence audit
@@ -74,7 +74,7 @@ Do not include by default:
 - records with unresolved same-name collision;
 - records whose role cannot be verified.
 
-Standalone preprints are used mainly as discovery or version evidence. If a published article or conference version exists, merge the preprint into that published version instead of counting it separately. If only a preprint exists and it otherwise satisfies identity and role evidence, it may be listed as a provisional paper-like record with a clear note.
+Standalone preprints, discussion papers, and posted-content records are used only as discovery or version evidence in the default journal-article workflow. If a published article or conference version exists, merge the preprint into that published version instead of counting it separately. If no published version exists, exclude the record from the default final journal-article table unless the user explicitly asks to include provisional preprints.
 
 ## Purpose
 
@@ -287,7 +287,7 @@ OpenAlex batch enumeration workflow:
 - Treat OpenAlex `authorships.author_position=first` for the target authorship as first-author evidence when identity is strong.
 - Treat OpenAlex `authorships.is_corresponding=true` for the target authorship as corresponding-author evidence when identity is strong.
 - Build the initial qualifying list locally from OpenAlex authorships before opening publisher pages.
-- Build an ambiguous-case queue for webpage/PDF verification. Include only: possible co-first/equal-contribution records, missing or conflicting correspondence metadata, title/DOI/version conflicts, records discovered outside OpenAlex, high-stakes `Nature` or `Science` main-journal records, same-name collisions, and cases where official CV/homepage role notation conflicts with OpenAlex.
+- Build an ambiguous-case queue for webpage/PDF verification. Include only: possible co-first/equal-contribution records, missing or conflicting correspondence metadata, missing or blank venue/source metadata, title/DOI/version conflicts, preprint/discussion-paper/posted-content records that may have a later journal version, records discovered outside OpenAlex, high-stakes `Nature` or `Science` main-journal records, same-name collisions, and cases where official CV/homepage role notation conflicts with OpenAlex.
 - Do not open publisher pages or PDFs for every OpenAlex first-author or `is_corresponding=true` record. Use publisher pages/PDFs only for the ambiguous-case queue.
 - If author-works enumeration is quota-limited, use DOI-level OpenAlex work lookups only for high-priority candidates and clearly label the run as not fully OpenAlex-enumerated.
 
@@ -308,7 +308,7 @@ Recommended source order:
 1. identity/timeline sources: official CV/homepage, ORCID, Google Scholar profile, local-language institutional pages;
 2. OpenAlex author resolution and full OpenAlex author-works enumeration;
 3. official CV/homepage, ORCID works, and Google Scholar profile as lightweight recall-gap checks against the OpenAlex batch list;
-4. Crossref DOI/title metadata only for records missing DOI, venue, publication date, or version clarity after OpenAlex;
+4. Crossref DOI/title metadata only for records missing DOI, venue, publication date, publication type, or version clarity after OpenAlex;
 5. Semantic Scholar, field-specific databases, and local-language databases only for candidates missing from OpenAlex or unresolved by the first four steps;
 6. publisher pages and article PDFs only for ambiguous-case role verification.
 
@@ -328,6 +328,13 @@ For OpenAlex batch candidates, collect from the batch metadata without opening p
 - publication type.
 
 For records outside the OpenAlex batch or records in the ambiguous-case queue, collect the same fields from the narrowest source that resolves the uncertainty. Do not fetch full pages or PDFs when DOI, title, venue, author role, and identity are already sufficient.
+
+Published-version and venue resolution:
+
+- Treat OpenAlex `type=preprint`, Crossref `type=posted-content`, arXiv/bioRxiv/medRxiv/ChemRxiv/SSRN/Research Square records, and publisher labels such as `preprint`, `discussion paper`, `Discuss.`, `submitted`, or `not accepted` as non-final by default.
+- When a candidate is non-final, has a blank venue/source, or has an uncertain venue, search Crossref and OpenAlex by normalized title and DOI family before final inclusion.
+- If a journal-article version exists with the same DOI family, title similarity >= 0.90, or a publisher page explicitly linking the discussion/preprint version to the final article, merge into the journal-article version and use the final journal venue, year/date, DOI, and publication type.
+- If no journal-article or accepted conference/proceedings version can be found, keep the record only as internal discovery evidence. Do not place it in the default final journal-article table.
 
 ### Phase 5 — Deduplicate and verify publication existence
 
@@ -350,6 +357,12 @@ Title matching rules:
 - below 0.75: do not merge automatically.
 
 If a preprint and published version are the same work, keep the published version as primary and record the preprint as an alternate version. If author order or role differs between versions, flag the discrepancy.
+
+Default final-list publication status rules:
+
+- Include only `journal-article`, accepted/published conference/proceedings papers, or equivalent formally published paper-like records.
+- Exclude standalone preprints, discussion papers, posted-content records, supplements, withdrawn manuscripts, and records whose review page says the manuscript was not accepted for further review.
+- Do not use a blank venue or a placeholder such as `journal pending verification`, `venue pending verification`, `期刊信息待核验`, or `来源待核验` in the final report. Resolve the venue before final inclusion, merge to the published version, or exclude the record from the default final table.
 
 For each merge candidate, compare DOI, normalized title, year, venue, first author, full or partial author list, and arXiv/preprint identifier. Use a publisher landing page only when these local identifiers are insufficient. Do not let a subtitle, punctuation, transliteration difference, or database-created duplicate create two final records for the same scholarly work. Conversely, do not merge distinct articles only because they share a short or generic title.
 
@@ -474,9 +487,10 @@ Readable report formatting:
 - The main Markdown and Word reports are for human reading, not raw database debugging.
 - In the main qualifying-paper list, show only these columns by default: year, paper title, journal, and scholar role.
 - The `journal` column must contain only the journal or venue name, without volume, issue, page range, article number, source-system label, DOI, URL, or database name.
+- The `journal` column must be verified before rendering. Never output a blank journal, `journal pending verification`, `venue pending verification`, `期刊信息待核验`, `来源待核验`, or similar placeholders in the default final table.
 - Do not include DOI or source links in the default report table unless the user explicitly asks for identifiers or links.
 - Do not include separate report sections for search coverage, limitations, caveats, notes, "supporting files", "companion files", evidence tables, rejection logs, Evidence Passport summaries, or preprint candidates.
-- Do not include standalone preprints in the default final report. Use them internally for discovery and merge them into the published article when a journal version exists. Mention a preprint only if the user explicitly asks for preprints or no published version exists and the user accepts provisional records.
+- Do not include standalone preprints, discussion papers, or posted-content records in the default final report. Use them internally for discovery and merge them into the published article when a journal version exists. Mention a preprint only if the user explicitly asks for preprints or no published version exists and the user accepts provisional records.
 - Do not display raw internal evidence strings such as `OpenAlex authorship.author_position=first`, `OpenAlex authorship.is_corresponding=true`, `Semantic Scholar author list position=first`, raw API field paths, JSON keys, cache IDs, or endpoint diagnostics in the main literature list.
 - Keep raw role evidence, source-specific fields, IDs, API diagnostics, rejected candidates, and confidence metadata internal unless the user explicitly asks for audit details.
 - Translate role labels and section headings into the language of the user's latest request. Do not hard-code Chinese role labels for every run.

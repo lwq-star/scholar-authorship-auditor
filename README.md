@@ -1,6 +1,6 @@
 # Scholar Authorship Auditor for Codex
 
-![version](https://img.shields.io/badge/version-v0.7.3-blue)
+![version](https://img.shields.io/badge/version-v0.7.4-blue)
 ![status](https://img.shields.io/badge/status-active-brightgreen)
 ![platform](https://img.shields.io/badge/platform-Codex-111827)
 ![outputs](https://img.shields.io/badge/outputs-Markdown%20%2B%20Word-7c3aed)

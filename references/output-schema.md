@@ -40,7 +40,10 @@ Internal evidence table fields, retained only in working notes unless requested:
 | `year` | Publication year or best available date. |
 | `venue` | Journal, conference, preprint server, or source. |
 | `publication_type` | Research article, review, conference/proceedings paper, preprint record, etc. |
+| `publication_status` | `published`, `accepted`, `preprint`, `discussion`, `posted_content`, `withdrawn`, or `unknown`. |
 | `doi_or_identifier` | DOI, PMID, PMCID, arXiv ID, OpenAlex Work ID, etc. |
+| `published_version_doi` | DOI for the final journal/proceedings version when the discovery record was a preprint/discussion/posted-content version. |
+| `venue_evidence` | Source used to verify the journal or venue name, such as OpenAlex primary source, Crossref container-title, publisher page, or official CV. |
 | `author_list` | Full byline if available. |
 | `target_author_printed_name` | Name form printed on article. |
 | `target_author_position` | Position in byline. |
@@ -70,6 +73,14 @@ Identity confidence: confirmed | strong | moderate
 Sources checked: ...
 Notes: ...
 ```
+
+Default final-table requirements:
+
+- `venue` must be the verified final journal or accepted/published proceedings venue.
+- `publication_status` must be `published` or `accepted` for default final reports.
+- `publication_type` must not be standalone `preprint`, `discussion`, `posted-content`, `supplement`, or `withdrawn`.
+- Blank venues and placeholders such as `journal pending verification`, `venue pending verification`, `期刊信息待核验`, and `来源待核验` are invalid in default final reports.
+- If the discovered version is a preprint/discussion/posted-content record, fill `published_version_doi` after merging to the final article; otherwise exclude it from the default final table unless the user explicitly requested preprints.
 
 ## Role labels
 
@@ -163,6 +174,8 @@ non_paper_item
 non_research_item
 paywalled_or_unverifiable
 publication_version_merged
+preprint_without_published_version
+venue_unresolved
 unresolved_identity_collision
 ```
 
