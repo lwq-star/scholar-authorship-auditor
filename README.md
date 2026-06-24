@@ -84,4 +84,6 @@ scholar-authorship-auditor/
 
 ## Optional OpenAlex API Key
 
-The skill works best when OpenAlex requests can use an API key. Provide it through an environment variable or another secret-safe channel. Do not hard-code API keys into `SKILL.md`, scripts, README files, reports, or logs.
+The skill works best when OpenAlex requests can use an API key. You can spend about 30 seconds creating a free OpenAlex account and getting a free API key from the OpenAlex platform. When you use this skill in Codex, give that API key to Codex at runtime or through a secret-safe channel.
+
+This skill will not publish your API key online. Do not hard-code API keys into `SKILL.md`, scripts, README files, reports, logs, or public GitHub commits.

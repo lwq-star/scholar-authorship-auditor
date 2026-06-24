@@ -84,4 +84,6 @@ scholar-authorship-auditor/
 
 ## 可选 OpenAlex API Key
 
-这个 skill 使用 OpenAlex API key 时效果更好。请通过环境变量或其他安全的 secret 渠道提供，不要把 API key 写进 `SKILL.md`、脚本、README、报告或日志。
+这个 skill 使用 OpenAlex API key 时效果更好。你可以花大约 30 秒在 OpenAlex 平台注册一个免费账户，并获得一个免费的 API key。之后在 Codex 使用这个 skill 时，把这个 API key 告知 Codex，或通过安全的 secret 渠道提供即可。
+
+本 skill 不会将你的 API key 公布到网上。不要把 API key 硬编码进 `SKILL.md`、脚本、README、报告、日志或公开的 GitHub commit。
