@@ -95,3 +95,11 @@ scholar-authorship-auditor/
 这个 skill 使用 OpenAlex API key 时效果更好。你可以花大约 30 秒在 OpenAlex 平台注册一个免费账户，并获得一个免费的 API key。之后在 Codex 使用这个 skill 时，把这个 API key 告知 Codex，或通过安全的 secret 渠道提供即可。
 
 本 skill 不会将你的 API key 公布到网上。不要把 API key 硬编码进 `SKILL.md`、脚本、README、报告、日志或公开的 GitHub commit。
+
+## 致谢
+
+本项目受益于开放学术元数据生态。感谢 OpenAlex、Crossref、ORCID、Semantic Scholar、PubMed / Europe PMC、dblp、arXiv、出版社论文页面、机构主页和官方 CV 等公开来源，使学者身份、论文记录和出版版本能够被发现与核验。
+
+感谢 [LinuxDO](https://linux.do/) 社区的支持。
+
+本项目为独立项目，不代表上述数据来源、平台或参考项目对本项目的背书。

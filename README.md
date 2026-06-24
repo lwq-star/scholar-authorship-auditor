@@ -95,3 +95,11 @@ scholar-authorship-auditor/
 The skill works best when OpenAlex requests can use an API key. You can spend about 30 seconds creating a free OpenAlex account and getting a free API key from the OpenAlex platform. When you use this skill in Codex, give that API key to Codex at runtime or through a secret-safe channel.
 
 This skill will not publish your API key online. Do not hard-code API keys into `SKILL.md`, scripts, README files, reports, logs, or public GitHub commits.
+
+## Acknowledgements
+
+This project benefits from the open scholarly metadata ecosystem. We thank OpenAlex, Crossref, ORCID, Semantic Scholar, PubMed / Europe PMC, dblp, arXiv, publisher article pages, institutional profiles, and official CVs for making scholar identity, publication records, and publication versions discoverable and verifiable.
+
+Thanks to the [LinuxDO](https://linux.do/) community for its support.
+
+This project is independent and is not endorsed by the data sources, platforms, or referenced projects above.
