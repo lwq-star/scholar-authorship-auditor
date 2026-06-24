@@ -33,6 +33,14 @@ Please use this [$scholar-authorship-auditor](SKILL.md) skill to find all articl
 
 The chat answer and generated reports follow the user's request language. Paper titles, journal names, author names, DOI, PMID, arXiv IDs, and quoted source text stay in their original form unless translation is requested.
 
+### Example previews
+
+Illustrative previews only; generated reports depend on the scholar and available evidence.
+
+![Chinese quick start preview](docs/images/quickstart-zh.png)
+
+![English quick start preview](docs/images/quickstart-en.png)
+
 ## What It Does
 
 - Reconstructs the target scholar's education and career timeline.
