@@ -16,7 +16,7 @@ description: >-
 
 ## Skill metadata
 
-- Version: 0.7.4
+- Version: 0.7.5
 - Status: active
 - Data access level: raw-to-verified
 - Task type: open-ended evidence audit
