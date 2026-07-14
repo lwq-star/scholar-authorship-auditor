@@ -10,9 +10,6 @@
 
 The default result includes papers where the target scholar is the **first author, co-first author, corresponding author, or co-corresponding author**. Ordinary middle-author papers are not included unless you explicitly ask for a broader coauthorship list.
 
-> [!CAUTION]
-> **Do not use an audit report for formal evaluation or public records without human review.** Public profiles and bibliographic databases can be incomplete or wrong, and some publisher pages do not expose contribution or correspondence notes. The skill records uncertainty instead of guessing, but no automated search can guarantee a complete publication record.
-
 ## Where to use it
 
 Use this skill in a Codex Desktop or Codex CLI conversation that can load local skills. It is not a standalone website, literature database, or Python package.
